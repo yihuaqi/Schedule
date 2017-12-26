@@ -9,16 +9,19 @@ class MainActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
-                message.setText(R.string.title_home)
+            R.id.navigation_schedule -> {
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ScheduleFragment())
+                        .commitAllowingStateLoss()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_dashboard -> {
-                message.setText(R.string.title_dashboard)
+            R.id.navigation_settings -> {
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, SettingFragment())
+                        .commitAllowingStateLoss()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-                message.setText(R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -28,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.selectedItemId = R.id.navigation_schedule
     }
 }
