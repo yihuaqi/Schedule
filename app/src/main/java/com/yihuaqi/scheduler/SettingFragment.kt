@@ -11,6 +11,6 @@ import android.view.ViewGroup
  */
 class SettingFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_settings, container, false)
+        return inflater?.inflate(R.layout.fragment_settings, container, false)
     }
 }
