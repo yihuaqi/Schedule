@@ -3,6 +3,7 @@ package com.yihuaqi.scheduler.Schedule
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,10 @@ class ScheduleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        recyclerView.layoutManager = GridLayoutManager(context, 5)
+        recyclerView.layoutManager = GridLayoutManager(context, 6)
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+
+        })
         recyclerView.setControllerAndBuildModels(ScheduleController())
     }
 }
