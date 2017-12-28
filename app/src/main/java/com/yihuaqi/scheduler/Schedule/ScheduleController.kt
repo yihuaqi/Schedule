@@ -1,10 +1,7 @@
 package com.yihuaqi.scheduler.Schedule
 
 import com.airbnb.epoxy.EpoxyController
-import com.yihuaqi.scheduler.Model.Shift
-import com.yihuaqi.scheduler.Model.Staff
-import com.yihuaqi.scheduler.Model.defaultMember
-import com.yihuaqi.scheduler.Model.defaultShift
+import com.yihuaqi.scheduler.Model.*
 
 /**
  * Created by yihuaqi on 12/26/17.
@@ -17,10 +14,7 @@ class ScheduleController : EpoxyController() {
     override fun buildModels() {
         ScheduleItem_().id(id).text("   ").addTo(this)
         (1..5).forEach { it.addTo(this) }
-        Shift.defaultShift().forEachIndexed { index, shift ->
-            shift.addTo(this)
-            (1..5).forEach { Staff.defaultMember()[index].addTo(this) }
-        }
+        Arranger(Shift.defaultShift(), Staff.goodShiftOrder().toMutableList(), Staff.badShiftOrder().toMutableList()).test()
     }
 }
 
@@ -34,4 +28,8 @@ fun Staff.addTo(controller: ScheduleController) {
 
 fun Shift.addTo(controller: ScheduleController) {
     ScheduleItem_().id(controller.id).text(this.name).addTo(controller)
+}
+
+fun Arrangement.addTo(controller: ScheduleController) {
+    ScheduleItem_().id(controller.id).text("Staff[${this.staff.name}] Shift[${this.shift.name}]").addTo(controller)
 }

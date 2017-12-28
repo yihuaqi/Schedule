@@ -8,11 +8,15 @@ sealed class Shift(val name: String) {
 }
 
 class GoodShift(n: String): Shift(n) {
-
+    override fun toString(): String {
+        return "GoodShift[$name]"
+    }
 }
 
 class BadShift(n: String): Shift(n) {
-
+    override fun toString(): String {
+        return "BadShift[$name]"
+    }
 }
 
 fun Shift.Companion.defaultShift(): List<Shift> {
@@ -27,4 +31,8 @@ fun Shift.Companion.defaultShift(): List<Shift> {
 
 fun Shift.Companion.defaultShiftName(): List<String> {
     return (1..15).map { "Shift$it" }
+}
+
+fun Shift.makeArrangement(staffs: MutableList<Staff>): Arrangement {
+    return Arrangement(staffs.removeAt(0), this)
 }
