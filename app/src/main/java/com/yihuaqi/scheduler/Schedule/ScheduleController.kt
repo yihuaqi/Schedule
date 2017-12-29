@@ -14,7 +14,7 @@ class ScheduleController : EpoxyController() {
     override fun buildModels() {
         ScheduleItem_().id(id).text("   ").addTo(this)
         (1..5).forEach { it.addTo(this) }
-        Arranger(Shift.defaultShift(), Staff.goodShiftOrder().toMutableList(), Staff.badShiftOrder().toMutableList()).test()
+        Arranger(Shift.defaultShift(), Staff.goodShiftOrder().toMutableList()).test()
     }
 }
 
