@@ -5,7 +5,19 @@ package com.yihuaqi.scheduler.Model
  */
 class Staff(val name: String) {
     companion object {
-
+        val ZHOU = Staff("周")
+        val MA = Staff("马")
+        val WANG = Staff("王")
+        val CAO = Staff("曹")
+        val DAN = Staff("单")
+        val GAO = Staff("高")
+        val ZHANG = Staff("张")
+        val SHI = Staff("史")
+        val MAI = Staff("麦")
+        val TANG = Staff("唐")
+        val LING = Staff("玲")
+        val QI = Staff("齐")
+        val ZHU = Staff("朱")
     }
 
     override fun toString(): String {
@@ -22,36 +34,36 @@ class Staff(val name: String) {
 
 fun Staff.Companion.groupAOrder(): List<Staff> {
     return arrayListOf(
-            Staff("周"),
-            Staff("马"),
-            Staff("王"),
-            Staff("曹"),
-            Staff("单"),
-            Staff("高"),
-            Staff("张"),
-            Staff("史"),
-            Staff("麦"),
-            Staff("唐"),
-            Staff("玲"),
-            Staff("齐")
+            ZHOU,
+            MA,
+            WANG,
+            CAO,
+            DAN,
+            GAO,
+            ZHANG,
+            SHI,
+            MAI,
+            TANG,
+            LING,
+            QI
     )
 }
 
 fun Staff.Companion.groupBOrder(): List<Staff> {
     return arrayListOf(
-            Staff("齐"),
-            Staff("曹"),
-            Staff("麦"),
-            Staff("高"),
-            Staff("玲"),
-            Staff("王"),
-            Staff("朱"),
-            Staff("张"),
-            Staff("史"),
-            Staff("马"),
-            Staff("单"),
-            Staff("唐"),
-            Staff("汪"),
-            Staff("周")
+            QI,
+            CAO,
+            MAI,
+            GAO,
+            LING,
+            WANG,
+            ZHU,
+            ZHANG,
+            SHI,
+            MA,
+            DAN,
+            TANG,
+            WANG,
+            ZHOU
     )
 }
