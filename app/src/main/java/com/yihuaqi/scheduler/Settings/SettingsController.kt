@@ -8,6 +8,7 @@ import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.yihuaqi.scheduler.Model.CoreData
 import com.yihuaqi.scheduler.Model.Staff
+import kotlin.reflect.KMutableProperty
 
 /**
  * Created by yihuaqi on 1/1/18.
@@ -15,31 +16,21 @@ import com.yihuaqi.scheduler.Model.Staff
 class SettingsController(val context: Context): EpoxyController() {
 
     override fun buildModels() {
-        val groupA = Staff.shuffledGroupAOrder
-        SettingEditItem_().id(0)
-                .title("Group A Staff")
-                .text(groupA[CoreData.groupAIndex].name)
-                .listener(View.OnClickListener {
-                    AlertDialog.Builder(context)
-                            .setTitle("Group A Staff")
-                            .setItems(groupA.map { it.name }.toTypedArray(), DialogInterface.OnClickListener { dialogInterface, i ->
-                                Log.d("Schedule", "selected: ${groupA[i].name}")
-                                CoreData.groupAIndex = i
-                            })
-                            .show()
+        showDialog(0, "Group A Staff", Staff.shuffledGroupAOrder, CoreData::groupAIndex)
+        showDialog(1, "Group B Staff", Staff.shuffledGroupBOrder, CoreData::groupBIndex)
+        showDialog(2, "Group Backup Staff", Staff.shuffledBackupOrder, CoreData::backupIndex)
+    }
 
-                })
-                .addTo(this)
-        val groupB = Staff.ShuffledGroupBOrder
-        SettingEditItem_().id(1 )
-                .title("Group B Staff")
-                .text(groupB[CoreData.groupBIndex].name)
+    fun showDialog(id: Int, title: String, groups: List<Staff>, index: KMutableProperty<Int>) {
+        SettingEditItem_().id(id)
+                .title(title)
+                .text(groups[index.getter.call()].name)
                 .listener(View.OnClickListener {
                     AlertDialog.Builder(context)
-                            .setTitle("Group A Staff")
-                            .setItems(groupB.map { it.name }.toTypedArray(), DialogInterface.OnClickListener { dialogInterface, i ->
-                                Log.d("Schedule", "selected: ${groupB[i].name}")
-                                CoreData.groupBIndex = i
+                            .setTitle(title)
+                            .setItems(groups.map { it.name }.toTypedArray(), DialogInterface.OnClickListener { dialogInterface, i ->
+                                Log.d("Schedule", "selected: ${groups[i].name}")
+                                index.setter.call(i)
                             })
                             .show()
 

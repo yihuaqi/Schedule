@@ -51,14 +51,33 @@ class Staff(val name: String) {
                 ZHOU
         )
 
+        private val backupOrder = arrayListOf(
+                ZHOU,
+                DAN,
+                WANG,
+                QI,
+                GAO,
+                CAO,
+                TANG,
+                MAI,
+                LING,
+                WANG,
+                ZHU
+        )
+
         val shuffledGroupAOrder: List<Staff>
         get() {
             return shuffle(groupAOrder, CoreData.groupAIndex)
         }
 
-        val ShuffledGroupBOrder: List<Staff>
+        val shuffledGroupBOrder: List<Staff>
             get() {
                 return shuffle(groupBOrder, CoreData.groupBIndex)
+            }
+
+        val shuffledBackupOrder: List<Staff>
+            get() {
+                return shuffle(backupOrder, CoreData.backupIndex)
             }
 
         fun shuffle(staffs: List<Staff>, initial: Int): List<Staff> {
