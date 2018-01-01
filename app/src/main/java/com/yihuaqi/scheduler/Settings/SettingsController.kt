@@ -8,8 +8,6 @@ import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.yihuaqi.scheduler.Model.CoreData
 import com.yihuaqi.scheduler.Model.Staff
-import com.yihuaqi.scheduler.Model.groupAOrder
-import com.yihuaqi.scheduler.Model.groupBOrder
 
 /**
  * Created by yihuaqi on 1/1/18.
@@ -17,7 +15,7 @@ import com.yihuaqi.scheduler.Model.groupBOrder
 class SettingsController(val context: Context): EpoxyController() {
 
     override fun buildModels() {
-        val groupA = Staff.groupAOrder()
+        val groupA = Staff.shuffledGroupAOrder
         SettingEditItem_().id(0)
                 .title("Group A Staff")
                 .text(groupA[CoreData.groupAIndex].name)
@@ -27,13 +25,12 @@ class SettingsController(val context: Context): EpoxyController() {
                             .setItems(groupA.map { it.name }.toTypedArray(), DialogInterface.OnClickListener { dialogInterface, i ->
                                 Log.d("Schedule", "selected: ${groupA[i].name}")
                                 CoreData.groupAIndex = i
-
                             })
                             .show()
 
                 })
                 .addTo(this)
-        val groupB = Staff.groupBOrder()
+        val groupB = Staff.ShuffledGroupBOrder
         SettingEditItem_().id(1 )
                 .title("Group B Staff")
                 .text(groupB[CoreData.groupBIndex].name)

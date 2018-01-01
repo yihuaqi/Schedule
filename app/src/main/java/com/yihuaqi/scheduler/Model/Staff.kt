@@ -18,6 +18,54 @@ class Staff(val name: String) {
         val LING = Staff("玲")
         val QI = Staff("齐")
         val ZHU = Staff("朱")
+
+        private val groupAOrder = arrayListOf(
+                ZHOU,
+                MA,
+                WANG,
+                CAO,
+                DAN,
+                GAO,
+                ZHANG,
+                SHI,
+                MAI,
+                TANG,
+                LING,
+                QI
+        )
+
+        private val groupBOrder = arrayListOf(
+                QI,
+                CAO,
+                MAI,
+                GAO,
+                LING,
+                WANG,
+                ZHU,
+                ZHANG,
+                SHI,
+                MA,
+                DAN,
+                TANG,
+                WANG,
+                ZHOU
+        )
+
+        val shuffledGroupAOrder: List<Staff>
+        get() {
+            return shuffle(groupAOrder, CoreData.groupAIndex)
+        }
+
+        val ShuffledGroupBOrder: List<Staff>
+            get() {
+                return shuffle(groupBOrder, CoreData.groupBIndex)
+            }
+
+        fun shuffle(staffs: List<Staff>, initial: Int): List<Staff> {
+            return staffs.mapIndexed { index, staff ->
+                staffs[(index + initial) % staffs.size]
+            }
+        }
     }
 
     override fun toString(): String {
@@ -30,40 +78,4 @@ class Staff(val name: String) {
         }
         return super.equals(other)
     }
-}
-
-fun Staff.Companion.groupAOrder(): List<Staff> {
-    return arrayListOf(
-            ZHOU,
-            MA,
-            WANG,
-            CAO,
-            DAN,
-            GAO,
-            ZHANG,
-            SHI,
-            MAI,
-            TANG,
-            LING,
-            QI
-    )
-}
-
-fun Staff.Companion.groupBOrder(): List<Staff> {
-    return arrayListOf(
-            QI,
-            CAO,
-            MAI,
-            GAO,
-            LING,
-            WANG,
-            ZHU,
-            ZHANG,
-            SHI,
-            MA,
-            DAN,
-            TANG,
-            WANG,
-            ZHOU
-    )
 }

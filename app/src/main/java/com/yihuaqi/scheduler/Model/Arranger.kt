@@ -10,7 +10,7 @@ class Arranger() {
     fun calculate(): List<Arrangement> {
         val result = LinkedList<Arrangement>()
         val groupB = step1()
-        val groupAStaff = Staff.groupAOrder()[0]
+        val groupAStaff = Staff.shuffledGroupAOrder[0]
         val prevGroupAArrangement = groupB.find { it.staff == groupAStaff }
         groupB.remove(prevGroupAArrangement)
         val groupA = Arrangement(groupAStaff, Shift.groupA())
@@ -18,7 +18,7 @@ class Arranger() {
         result.addAll(groupB)
         prevGroupAArrangement?.shift?.let {
             if (it.mustAvailable) {
-                result.add(Arrangement(Staff.groupAOrder()[1], prevGroupAArrangement.shift))
+                result.add(Arrangement(Staff.shuffledGroupAOrder[1], prevGroupAArrangement.shift))
             }
         }
         return result
@@ -26,7 +26,7 @@ class Arranger() {
 
     private fun step1(): MutableList<Arrangement> {
         return Shift.groupB().mapIndexed { index, shift ->
-            Arrangement(Staff.groupBOrder()[index], shift)
+            Arrangement(Staff.ShuffledGroupBOrder[index], shift)
         }.toMutableList()
     }
 
