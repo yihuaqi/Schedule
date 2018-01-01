@@ -3,7 +3,7 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 12/27/17.
  */
-class Staff(val id: Int, val name: String) {
+class Staff(val name: String) {
     companion object {
 
     }
@@ -13,18 +13,38 @@ class Staff(val id: Int, val name: String) {
     }
 }
 
-fun Staff.Companion.defaultMember(): List<Staff> {
-    return defaultNames().mapIndexed { index, name -> Staff(index, name) }
-}
-
-fun Staff.Companion.defaultNames(): List<String> {
-    return (1..15).map { "staff$it" }
-}
-
 fun Staff.Companion.goodShiftOrder(): List<Staff> {
-    return defaultMember()
+    return arrayListOf(
+            Staff("周"),
+            Staff("马"),
+            Staff("王"),
+            Staff("曹"),
+            Staff("单"),
+            Staff("高"),
+            Staff("张"),
+            Staff("史"),
+            Staff("麦"),
+            Staff("唐"),
+            Staff("玲"),
+            Staff("齐")
+    )
 }
 
 fun Staff.Companion.badShiftOrder(): List<Staff> {
-    return defaultMember().reversed()
+    return arrayListOf(
+            Staff("齐"),
+            Staff("曹"),
+            Staff("麦"),
+            Staff("高"),
+            Staff("玲"),
+            Staff("王"),
+            Staff("朱"),
+            Staff("张"),
+            Staff("史"),
+            Staff("马"),
+            Staff("单"),
+            Staff("唐"),
+            Staff("汪"),
+            Staff("周")
+    )
 }
