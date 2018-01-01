@@ -3,7 +3,7 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 12/27/17.
  */
-class Shift(val name: String) {
+class Shift(val name: String, val mustAvailable: Boolean = false) {
     companion object {
 
     }
@@ -23,22 +23,22 @@ fun Shift.Companion.defaultShiftName(): List<String> {
     return (1..15).map { "Shift$it" }
 }
 
-fun Shift.Companion.groupA(): List<Shift> {
-    return arrayListOf(Shift("会诊"))
+fun Shift.Companion.groupA(): Shift {
+    return Shift("会诊")
 }
 
 fun Shift.Companion.groupB(): List<Shift> {
     return arrayListOf(
-            Shift("胃肠造影"),
+            Shift("胃肠造影", true),
             Shift("CT-1"),
             Shift("CT-2"),
             Shift("CT-3"),
             Shift("CT-4"),
-            Shift("MR审1"),
+            Shift("MR审1", true),
             Shift("CT-5"),
             Shift("CT-6"),
             Shift("CT-7"),
-            Shift("MR审2"),
+            Shift("MR审2", true),
             Shift("CT-8"),
             Shift("CT-9"),
             Shift("CT-10"),

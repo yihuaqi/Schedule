@@ -1,7 +1,10 @@
 package com.yihuaqi.scheduler.Schedule
 
 import com.airbnb.epoxy.EpoxyController
-import com.yihuaqi.scheduler.Model.*
+import com.yihuaqi.scheduler.Model.Arrangement
+import com.yihuaqi.scheduler.Model.Arranger
+import com.yihuaqi.scheduler.Model.Shift
+import com.yihuaqi.scheduler.Model.Staff
 
 /**
  * Created by yihuaqi on 12/26/17.
@@ -14,7 +17,7 @@ class ScheduleController : EpoxyController() {
     override fun buildModels() {
         ScheduleItem_().id(id).text("   ").addTo(this)
         (1..5).forEach { it.addTo(this) }
-        Arranger(Shift.defaultShift(), Staff.goodShiftOrder().toMutableList()).test()
+        Arranger().test()
     }
 }
 

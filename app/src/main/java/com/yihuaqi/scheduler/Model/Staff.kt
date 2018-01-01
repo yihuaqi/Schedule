@@ -11,9 +11,16 @@ class Staff(val name: String) {
     override fun toString(): String {
         return "Staff[$name]"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is Staff) {
+            return name == other.name
+        }
+        return super.equals(other)
+    }
 }
 
-fun Staff.Companion.goodShiftOrder(): List<Staff> {
+fun Staff.Companion.groupAOrder(): List<Staff> {
     return arrayListOf(
             Staff("周"),
             Staff("马"),
@@ -30,7 +37,7 @@ fun Staff.Companion.goodShiftOrder(): List<Staff> {
     )
 }
 
-fun Staff.Companion.badShiftOrder(): List<Staff> {
+fun Staff.Companion.groupBOrder(): List<Staff> {
     return arrayListOf(
             Staff("齐"),
             Staff("曹"),
