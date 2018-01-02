@@ -2,7 +2,6 @@ package com.yihuaqi.scheduler.Settings
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.util.Log
 import android.view.View
 import com.airbnb.epoxy.EpoxyController
@@ -28,7 +27,7 @@ class SettingsController(val context: Context): EpoxyController() {
                 .listener(View.OnClickListener {
                     AlertDialog.Builder(context)
                             .setTitle(title)
-                            .setItems(groups.map { it.name }.toTypedArray(), DialogInterface.OnClickListener { dialogInterface, i ->
+                            .setItems(groups.map { it.name }.toTypedArray(), { dialogInterface, i ->
                                 Log.d("Schedule", "selected: ${groups[i].name}")
                                 index.setter.call(i)
                             })

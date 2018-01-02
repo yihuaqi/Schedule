@@ -6,7 +6,7 @@ import java.util.*
 /**
  * Created by yihuaqi on 12/28/17.
  */
-class Arranger() {
+class Arranger {
     fun calculate(workDay: WorkDay): List<Arrangement> {
         val result = LinkedList<Arrangement>()
 
@@ -19,9 +19,23 @@ class Arranger() {
         result.add(groupA)
         result.addAll(groupB)
 
-        prevGroupAArrangement?.shift?.let {
-            if (it.mustAvailable) {
-                result.add(Arrangement(Staff.shuffledGroupAOrder[1], prevGroupAArrangement.shift))
+        if (workDay != WorkDay.Tuesday) {
+            val nextBackup = Staff.shuffledBackupOrder[0]
+            prevGroupAArrangement?.shift?.let {
+                if (it.mustAvailable) {
+                    result.add(Arrangement(nextBackup, prevGroupAArrangement.shift))
+                }
+            }
+        } else {
+            val prevSunArrangment = groupB.find { it.shift == Shift.MR_2}
+            result.remove(prevSunArrangment)
+            result.add(Arrangement(Staff.SUN, Shift.MR_2))
+
+            val nextBackup = prevSunArrangment?.staff ?: Staff.shuffledBackupOrder[0]
+            prevGroupAArrangement?.shift?.let {
+                if (it.mustAvailable) {
+                    result.add(Arrangement(nextBackup, prevGroupAArrangement.shift))
+                }
             }
         }
         return result
@@ -34,7 +48,7 @@ class Arranger() {
     }
 
     fun test() {
-        calculate(WorkDay.Monday).forEach { Log.d("Arranger", it.toString()) }
+        calculate(WorkDay.Tuesday).forEach { Log.d("Arranger", it.toString()) }
     }
 
 }

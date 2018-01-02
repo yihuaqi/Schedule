@@ -18,6 +18,7 @@ class Staff(val name: String) {
         val LING = Staff("玲")
         val QI = Staff("齐")
         val ZHU = Staff("朱")
+        val SUN = Staff("孙")
 
         private val groupAOrder = arrayListOf(
                 ZHOU,
