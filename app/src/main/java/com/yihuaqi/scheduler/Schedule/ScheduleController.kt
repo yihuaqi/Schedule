@@ -34,5 +34,5 @@ fun Shift.addTo(controller: ScheduleController) {
 }
 
 fun Arrangement.addTo(controller: ScheduleController) {
-    ScheduleItem_().id(controller.id).text("Staff[${this.staff.name}] Shift[${this.shift.name}]").addTo(controller)
+    ScheduleItem_().id(controller.id).text("Staff[${this.staff?.name}] Shift[${this.shift.name}]").addTo(controller)
 }

@@ -12,7 +12,8 @@ class Arranger {
 
         val groupB = step1()
 
-        val groupAStaff = Staff.shuffledGroupAOrder[0]
+        val groupAStaff = Staff.shuffledGroupAOrder.nextAvailableStaff(workDay, Shift.HUI_ZHEN)
+
         val prevGroupAArrangement = groupB.find { it.staff == groupAStaff }
         groupB.remove(prevGroupAArrangement)
         val groupA = Arrangement(groupAStaff, Shift.groupA())
@@ -20,9 +21,9 @@ class Arranger {
         result.addAll(groupB)
 
         if (workDay != WorkDay.Tuesday) {
-            val nextBackup = Staff.shuffledBackupOrder[0]
             prevGroupAArrangement?.shift?.let {
                 if (it.mustAvailable) {
+                    val nextBackup = Staff.shuffledBackupOrder.nextAvailableStaff(workDay, it)
                     result.add(Arrangement(nextBackup, prevGroupAArrangement.shift))
                 }
             }
@@ -31,9 +32,9 @@ class Arranger {
             result.remove(prevSunArrangment)
             result.add(Arrangement(Staff.SUN, Shift.MR_2))
 
-            val nextBackup = prevSunArrangment?.staff ?: Staff.shuffledBackupOrder[0]
             prevGroupAArrangement?.shift?.let {
                 if (it.mustAvailable) {
+                    val nextBackup = prevSunArrangment?.staff ?: Staff.shuffledBackupOrder.nextAvailableStaff(workDay, it)
                     result.add(Arrangement(nextBackup, prevGroupAArrangement.shift))
                 }
             }
