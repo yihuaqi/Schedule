@@ -11,4 +11,8 @@ class WorkDay(val name: String) {
         val Thursday = WorkDay("周四")
         val Friday = WorkDay("周五")
     }
+
+    override fun toString(): String {
+        return "WorkDay[$name]"
+    }
 }

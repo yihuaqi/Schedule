@@ -104,6 +104,6 @@ class Staff(val name: String, val incapableShifts: List<Shift> = arrayListOf(), 
     }
 }
 
-fun List<Staff>.nextAvailableStaff(workDay: WorkDay, shift: Shift): Staff? {
+fun List<Staff>.nextAvailableStaff(shift: Shift, workDay: WorkDay): Staff? {
     return this.find { it.isAvailable(workDay, shift) }
 }

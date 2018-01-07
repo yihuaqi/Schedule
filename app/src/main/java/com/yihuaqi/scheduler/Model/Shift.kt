@@ -62,6 +62,6 @@ fun Shift.Companion.groupB(): List<Shift> {
 
 
 
-fun Shift.makeArrangement(staffs: MutableList<Staff>): Arrangement {
-    return Arrangement(staffs.removeAt(0), this)
+fun Shift.makeArrangement(staffs: MutableList<Staff>, workDay: WorkDay): Arrangement {
+    return Arrangement(staffs.removeAt(0), this, workDay)
 }
