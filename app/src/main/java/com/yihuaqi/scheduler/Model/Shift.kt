@@ -20,6 +20,10 @@ class Shift(val name: String, val mustAvailable: Boolean = false) {
         val CT_10 = Shift("CT-10")
         val CT_11 = Shift("CT-11")
         val HUI_ZHEN = Shift("会诊")
+
+        fun nextAvailableCT(arrangements: List<Arrangement>, workDay: WorkDay): Shift? {
+            return arrangements.filter { it.workDay == workDay && it.shift.name.contains("CT") }.firstOrNull()?.shift
+        }
     }
 
     override fun toString(): String {
@@ -58,10 +62,4 @@ fun Shift.Companion.groupB(): List<Shift> {
             CT_10,
             CT_11
     )
-}
-
-
-
-fun Shift.makeArrangement(staffs: MutableList<Staff>, workDay: WorkDay): Arrangement {
-    return Arrangement(staffs.removeAt(0), this, workDay)
 }

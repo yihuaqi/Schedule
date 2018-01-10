@@ -1,81 +1,102 @@
 package com.yihuaqi.scheduler.Model
 
 import android.util.Log
-import java.util.*
 
 /**
  * Created by yihuaqi on 12/28/17.
  */
 class Arranger {
     fun calculate(workDay: WorkDay): List<Arrangement> {
-        val result = LinkedList<Arrangement>()
 
-        val groupB = step1(workDay)
+        val result = step1(workDay)
 
         val groupAStaff = Staff.shuffledGroupAOrder.nextAvailableStaff(Shift.HUI_ZHEN, workDay)
 
-        swapArrangment(groupB, Arrangement(groupAStaff, Shift.HUI_ZHEN, workDay), {shift, workday -> Staff.shuffledBackupOrder.nextAvailableStaff(shift, workday)})
+        swapArrangement(result, Arrangement(groupAStaff, Shift.HUI_ZHEN, workDay), nextAvailableStaff)
 
-        result.addAll(groupB)
-//
-//        val prevGroupAArrangement = groupB.find { it.staff == groupAStaff }
-//        groupB.remove(prevGroupAArrangement)
-//        val groupA = Arrangement(groupAStaff, Shift.groupA(), workDay)
-//        result.add(groupA)
-//        result.addAll(groupB)
-//
-//        if (workDay != WorkDay.Tuesday) {
-//            prevGroupAArrangement?.shift?.let {
-//                if (it.mustAvailable) {
-//                    val nextBackup = Staff.shuffledBackupOrder.nextAvailableStaff(workDay, it)
-//                    result.add(Arrangement(nextBackup, prevGroupAArrangement.shift, workDay))
-//                }
-//            }
-//        } else {
-//            val prevSunArrangment = groupB.find { it.shift == Shift.MR_2}
-//            result.remove(prevSunArrangment)
-//            result.add(Arrangement(Staff.SUN, Shift.MR_2, workDay))
-//
-//            prevGroupAArrangement?.shift?.let {
-//                if (it.mustAvailable) {
-//                    val nextBackup = prevSunArrangment?.staff ?: Staff.shuffledBackupOrder.nextAvailableStaff(workDay, it)
-//                    result.add(Arrangement(nextBackup, prevGroupAArrangement.shift, workDay))
-//                }
-//            }
-//        }
+        forceArrangement(result, workDay)
 
         return result
     }
 
+    val nextAvailableStaff = { shift: Shift, workday: WorkDay ->
+        Staff.shuffledBackupOrder.nextAvailableStaff(shift, workday)
+
+    }
+
     private fun step1(workDay: WorkDay): MutableList<Arrangement> {
         return Shift.groupB().mapIndexed { index, shift ->
-            Arrangement(Staff.shuffledGroupBOrder[index], shift, workDay)
+            val a = Arrangement(Staff.shuffledGroupBOrder[index], shift, workDay)
+            Log.d("Arranger", "step1: $a")
+            a
         }.toMutableList()
     }
 
-    private fun swapArrangment(arrangements: MutableList<Arrangement>, swapArrangement: Arrangement, backup: (Shift, WorkDay) -> Staff?) {
-        val prevArrangement = arrangements.find { it.staff == swapArrangement.staff && it.workDay == swapArrangement.workDay }
+    private fun swapArrangement(arrangements: MutableList<Arrangement>, swapArrangement: Arrangement, backup: (Shift, WorkDay) -> Staff?) {
+        val prevArrangement = arrangements.find { it.staff == swapArrangement.staff }
         arrangements.remove(prevArrangement)
+        Log.d("Arranger", "swapArrangement remove $prevArrangement")
         arrangements.add(swapArrangement)
+        Log.d("Arranger", "swapArrangement add $swapArrangement")
         if (swapArrangement.workDay != WorkDay.Tuesday) {
             prevArrangement?.shift?.let {
                 if (it.mustAvailable) {
                     val nextBackup = backup(it, swapArrangement.workDay)
-                    arrangements.add(Arrangement(nextBackup, it, swapArrangement.workDay))
+                    val a = Arrangement(nextBackup, it, swapArrangement.workDay)
+                    arrangements.add(a)
+                    Log.d("Arranger", "swapArrangement add $a because mustAvailable")
                 }
             }
         } else {
             val prevSunArrangement = arrangements.find { it.shift == Shift.MR_2 }
             arrangements.remove(prevSunArrangement)
-            arrangements.add(Arrangement(Staff.SUN, Shift.MR_2, swapArrangement.workDay))
+            Log.d("Arranger", "swapArrangement remove $prevSunArrangement because of ${swapArrangement.workDay}")
+            val a = Arrangement(Staff.SUN, Shift.MR_2, swapArrangement.workDay)
+            arrangements.add(a)
+            Log.d("Arranger", "swapArrangement add $a because of ${swapArrangement.workDay}")
             prevArrangement?.shift?.let {
                 if (it.mustAvailable) {
                     val nextBackup = prevSunArrangement?.staff ?: backup(it, swapArrangement.workDay)
-                    arrangements.add(Arrangement(nextBackup, it, swapArrangement.workDay))
+                    val a2 = Arrangement(nextBackup, it, swapArrangement.workDay)
+                    arrangements.add(a2)
+                    Log.d("Arranger", "swapArrangement add $a2 because of ${swapArrangement.workDay} and mustAvailabe")
                 }
             }
         }
     }
+
+    private fun removeArrangement(arrangements: MutableList<Arrangement>, staff: Staff, workDay: WorkDay, backup: (Shift, WorkDay) -> Staff?) {
+        val prevArrangement = arrangements.find { it.staff == staff }
+        arrangements.remove(prevArrangement)
+        Log.d("Arranger", "removeArrangement remove $prevArrangement because of $staff and $workDay")
+        prevArrangement?.shift?.let {
+            if (it.mustAvailable) {
+                val nextBackup = backup(it, workDay)
+                val a = Arrangement(nextBackup, it, workDay)
+                arrangements.add(a)
+                Log.d("Arranger", "removeArrangement add $a because mustAvailable")
+            }
+        }
+    }
+
+    private fun forceArrangement(arrangements: MutableList<Arrangement>, workDay: WorkDay) {
+        when(workDay) {
+            WorkDay.Monday -> {
+                Shift.nextAvailableCT(arrangements, workDay)?.let {
+                    swapArrangement(arrangements, Arrangement(Staff.ZHOU, it, workDay), nextAvailableStaff)
+                }
+            }
+            WorkDay.Wendsday -> {
+                Shift.nextAvailableCT(arrangements, workDay)?.let {
+                    swapArrangement(arrangements, Arrangement(Staff.MAI, it, workDay), nextAvailableStaff)
+                }
+            }
+            WorkDay.Thursday -> {
+                removeArrangement(arrangements, Staff.TANG, workDay, nextAvailableStaff)
+            }
+        }
+    }
+
 
     fun test() {
         calculate(WorkDay.Tuesday).forEach { Log.d("Arranger", it.toString()) }
