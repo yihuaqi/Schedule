@@ -29,7 +29,7 @@ abstract class SettingEditItem: EpoxyModelWithHolder<SettingEditItem.Holder>() {
         lateinit var text: TextView
         lateinit var root: View
         override fun bindView(itemView: View?) {
-            title = itemView?.findViewById(R.id.title)!!
+            title = itemView!!.findViewById(R.id.title)!!
             text = itemView.findViewById(R.id.text)
             root = itemView
         }

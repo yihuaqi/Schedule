@@ -1,5 +1,6 @@
 package com.yihuaqi.scheduler.Schedule
 
+import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.yihuaqi.scheduler.Model.Arrangement
 import com.yihuaqi.scheduler.Model.Arranger
@@ -17,7 +18,9 @@ class ScheduleController : EpoxyController() {
     override fun buildModels() {
         ScheduleItem_().id(id).text("   ").addTo(this)
         (1..5).forEach { it.addTo(this) }
-        Arranger().test()
+        TestButtonItem_().id(id).text("Test").listener(View.OnClickListener {
+            Arranger().test()
+        }).addTo(this)
     }
 }
 

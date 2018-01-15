@@ -22,12 +22,18 @@ class Shift(val name: String, val mustAvailable: Boolean = false) {
         val HUI_ZHEN = Shift("会诊")
 
         fun nextAvailableCT(arrangements: List<Arrangement>, workDay: WorkDay): Shift? {
-            return arrangements.filter { it.workDay == workDay && it.shift.name.contains("CT") }.firstOrNull()?.shift
+            return arrangements.firstOrNull { it.workDay == workDay && it.shift.isCT() }?.shift
         }
+
     }
 
     override fun toString(): String {
         return "Shift[$name]"
+    }
+
+
+    fun isCT(): Boolean {
+        return name.contains("CT")
     }
 }
 
