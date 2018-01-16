@@ -66,20 +66,17 @@ class Staff(val name: String, val incapableShifts: List<Shift> = arrayListOf(), 
                 ZHU
         )
 
-        val shuffledGroupAOrder: List<Staff>
-        get() {
-            return shuffle(groupAOrder, CoreData.groupAIndex)
+        fun getShuffledGroupAOrder(workDay: WorkDay): List<Staff> {
+            return shuffle(groupAOrder, CoreData.groupAIndex + workDay.offset)
         }
 
-        val shuffledGroupBOrder: List<Staff>
-            get() {
-                return shuffle(groupBOrder, CoreData.groupBIndex)
-            }
+        fun getShuffledGroupBOrder(workDay: WorkDay): List<Staff> {
+            return shuffle(groupBOrder, CoreData.groupBIndex + workDay.offset)
+        }
 
-        val shuffledBackupOrder: List<Staff>
-            get() {
-                return shuffle(backupOrder, CoreData.backupIndex)
-            }
+        fun getShuffledBackupOrder(workDay: WorkDay): List<Staff> {
+            return shuffle(backupOrder, CoreData.backupIndex + workDay.offset)
+        }
 
         fun shuffle(staffs: List<Staff>, initial: Int): List<Staff> {
             return staffs.mapIndexed { index, staff ->

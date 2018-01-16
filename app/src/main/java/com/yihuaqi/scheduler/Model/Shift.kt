@@ -25,6 +25,8 @@ class Shift(val name: String, val mustAvailable: Boolean = false) {
             return arrangements.firstOrNull { it.workDay == workDay && it.shift.isCT() }?.shift
         }
 
+        val ALL = listOf(HUI_ZHEN, CHANGE_WEI, CT_1, CT_2, CT_3, CT_4, MR_1, CT_5, CT_6, CT_7, MR_2, CT_8, CT_9, CT_10, CT_11)
+
     }
 
     override fun toString(): String {
