@@ -48,6 +48,8 @@ class Arranger {
 
         step3(result, workDay, backup)
 
+        step4(result, workDay)
+
         return result
     }
 
@@ -62,6 +64,14 @@ class Arranger {
             }
         }
         Log.d(TAG, "stepB finished")
+    }
+
+    fun step4(arrangements: MutableList<Arrangement>, workDay: WorkDay) {
+        Shift.ALL.forEach { shift ->
+            if (arrangements.find { it.shift == shift } == null) {
+                arrangements.add(Arrangement(null, shift, workDay))
+            }
+        }
     }
 
     fun fillInArrangement(arrangements: MutableList<Arrangement>, arrangement: Arrangement): Arrangement? {

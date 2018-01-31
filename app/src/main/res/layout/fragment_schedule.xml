@@ -4,8 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.airbnb.epoxy.EpoxyRecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewWorkDay"
+        android:layout_width="match_parent"
+        android:layout_height="25dp">
+    </com.airbnb.epoxy.EpoxyRecyclerView>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_below="@id/recyclerViewWorkDay"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewShift"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewMonday"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewTuesday"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewWendsday"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewThursday"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recyclerViewFriday"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+        </com.airbnb.epoxy.EpoxyRecyclerView>
+    </LinearLayout>
 </RelativeLayout>
