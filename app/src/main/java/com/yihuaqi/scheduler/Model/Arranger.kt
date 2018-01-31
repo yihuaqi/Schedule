@@ -35,6 +35,20 @@ class Arranger {
 //        swapArrangement(result, Arrangement(groupAStaff, Shift.HUI_ZHEN, workDay), nextAvailableStaff)
 
         val backupStaffs = Staff.getShuffledBackupOrder(workDay).toMutableList()
+
+        if (workDay == WorkDay.Tuesday) {
+            Log.d(TAG, "step1_5: assign SUN")
+            val staff = result.find { it.shift == Shift.MR_2 }?.staff
+            staff?.let {
+                val arrangement = removeArrangementForStaff(result, staff = staff)
+                arrangement?.staff?.let {
+                    backupStaffs.remove(staff)
+                    backupStaffs.add(staff)
+                }
+            }
+            fillInArrangement(result, Arrangement(Staff.SUN, Shift.MR_2, workDay))
+        }
+
         val backup = { arrangements: List<Arrangement>, shift: Shift, workDay: WorkDay ->
             val staff = backupStaffs.find { backupStaff ->
                 backupStaff.isAvailable(workDay, shift)
@@ -50,6 +64,11 @@ class Arranger {
 
         step4(result, workDay)
 
+        Log.d(TAG, "Result: ")
+        result.forEach {
+            Log.d(TAG, it.toString())
+        }
+
         return result
     }
 
@@ -59,11 +78,12 @@ class Arranger {
         before?.let {
             if (it.shift == Shift.MR_2 && workDay == WorkDay.Tuesday) {
                 arrangements.add(Arrangement(Staff.SUN, it.shift, workDay))
-            } else {
-                arrangements.add(Arrangement(backup(arrangements, it.shift, it.workDay), it.shift, workDay))
             }
         }
-        Log.d(TAG, "stepB finished")
+        arrangements.forEach {
+            Log.d(TAG, it.toString())
+        }
+        Log.d(TAG, "step2 finished")
     }
 
     fun step4(arrangements: MutableList<Arrangement>, workDay: WorkDay) {
@@ -129,6 +149,9 @@ class Arranger {
             WorkDay.Thursday -> {
                 removeArrangement(arrangements, Staff.TANG, workDay, backup)
             }
+        }
+        arrangements.forEach {
+            Log.d(TAG, it.toString())
         }
         Log.d(TAG, "Step 3 end: ")
     }

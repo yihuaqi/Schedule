@@ -9,10 +9,11 @@
         android:layout_height="25dp">
     </com.airbnb.epoxy.EpoxyRecyclerView>
     <LinearLayout
+        android:id="@+id/recyclerViewSchedule"
         android:orientation="horizontal"
         android:layout_below="@id/recyclerViewWorkDay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <com.airbnb.epoxy.EpoxyRecyclerView
             android:id="@+id/recyclerViewShift"
             android:layout_weight="1"

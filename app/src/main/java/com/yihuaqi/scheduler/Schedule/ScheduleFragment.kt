@@ -3,11 +3,9 @@ package com.yihuaqi.scheduler.Schedule
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.airbnb.epoxy.EpoxyTouchHelper
 import com.yihuaqi.scheduler.Model.Arrangement
@@ -27,6 +25,17 @@ class ScheduleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        initWorkDays()
+        initShifts()
+
+        val arrangementsMap = getArrangementsMap()
+
+        initArrangements(arrangementsMap)
+
+
+    }
+
+    fun initWorkDays() {
         recyclerViewWorkDay.layoutManager = GridLayoutManager(context, 6)
         recyclerViewWorkDay.buildModelsWith { controller ->
             ScheduleItem_().id(-1).text("").color(true).addTo(controller)
@@ -34,21 +43,19 @@ class ScheduleFragment : Fragment() {
                 it.toItem(it.offset).addTo(controller)
             }
         }
+    }
+
+    fun initShifts() {
         recyclerViewShift.buildModelsWith { controller ->
             Shift.ALL.forEachIndexed { index, shift ->
                 shift.toItem(index).addTo(controller)
             }
         }
-        val workdayMap = mapOf<WorkDay, EpoxyRecyclerView>(
-                WorkDay.Monday to recyclerViewMonday,
-                WorkDay.Tuesday to recyclerViewTuesday,
-                WorkDay.Wendsday to recyclerViewWendsday,
-                WorkDay.Thursday to recyclerViewThursday,
-                WorkDay.Friday to recyclerViewFriday
-                )
-        val arranger = Arranger()
-        workdayMap.forEach { (workDay, epoxyRecyclerView) ->
-            val arrangements = arranger.calculate(workDay)
+    }
+
+    fun initArrangements(arrangementsMap: MutableMap<WorkDay, MutableList<Arrangement>>) {
+        getWorkdayMap().forEach { (workDay, epoxyRecyclerView) ->
+            val arrangements = arrangementsMap[workDay]!!
             epoxyRecyclerView.buildModelsWith { controller ->
                 Shift.ALL.forEachIndexed { index, shift ->
                     arrangements.find {arrangement ->
@@ -61,21 +68,34 @@ class ScheduleFragment : Fragment() {
                         .withTarget(ScheduleItem::class.java)
                         .andCallbacks(object : EpoxyTouchHelper.DragCallbacks<ScheduleItem>() {
                             override fun onModelMoved(fromPosition: Int, toPosition: Int, modelBeingMoved: ScheduleItem?, itemView: View?) {
-                                Log.d("ScheduleFragment", "onModelMoved")
-                            }
+                                val fromShift = Shift.ALL[fromPosition]
+                                val toShift = Shift.ALL[toPosition]
 
+                                val fromArrangement = arrangements.find { it.shift == fromShift }!!
+                                val toArrangement = arrangements.find { it.shift == toShift }!!
+                                fromArrangement.shift = toShift
+                                toArrangement.shift = fromShift
+                            }
                         })
             }
         }
     }
 
-    /** Easily add models to an EpoxyRecyclerView, the same way you would in a buildModels method of EpoxyController. */
-    fun EpoxyRecyclerView.withModels(buildModelsCallback: EpoxyController.() -> Unit) {
-        setControllerAndBuildModels(object : EpoxyController() {
-            override fun buildModels() {
-                buildModelsCallback()
-            }
-        })
+    fun getArrangementsMap(): MutableMap<WorkDay, MutableList<Arrangement>> {
+        val arranger = Arranger()
+        return WorkDay.ALL.map {
+            it to arranger.calculate(it).toMutableList()
+        }.toMap().toMutableMap()
+    }
+
+    fun getWorkdayMap(): Map<WorkDay, EpoxyRecyclerView> {
+        return mapOf<WorkDay, EpoxyRecyclerView>(
+                WorkDay.Monday to recyclerViewMonday,
+                WorkDay.Tuesday to recyclerViewTuesday,
+                WorkDay.Wendsday to recyclerViewWendsday,
+                WorkDay.Thursday to recyclerViewThursday,
+                WorkDay.Friday to recyclerViewFriday
+        )
     }
 }
 
@@ -88,5 +108,5 @@ fun Shift.toItem(id: Int): ScheduleItem_ {
 }
 
 fun Arrangement.toItem(id: Int, color: Boolean): ScheduleItem_ {
-    return ScheduleItem_().id(id).color(color).text(this?.staff?.name ?: "空")
+    return ScheduleItem_().id(this.staff?.id?: -(id + 1)).color(color).text(this?.staff?.name ?: "空")
 }

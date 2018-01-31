@@ -3,35 +3,37 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 12/27/17.
  */
-class Staff(val name: String,
+class Staff(val id: Int,
+            val name: String,
             val incapableShifts: List<Shift> = arrayListOf(),
             val incapableWorkDays: List<WorkDay> = arrayListOf(),
             val forceEmpty: List<Arrangement> = arrayListOf()) {
     companion object {
-        val ZHOU = Staff("周",
+        val ZHOU = Staff(0, "周",
                 incapableShifts = arrayListOf(Shift.MR_1, Shift.MR_2),
                 forceEmpty = arrayListOf(
                         Arrangement(null, Shift.HUI_ZHEN, WorkDay.Monday),
                         Arrangement(null, Shift.CHANGE_WEI, WorkDay.Monday)
                 )
         )
-        val MA = Staff("马")
-        val WANG = Staff("王")
-        val CAO = Staff("曹")
-        val DAN = Staff("单")
-        val GAO = Staff("高")
-        val ZHANG = Staff("张")
-        val SHI = Staff("史")
-        val MAI = Staff("麦",
+        val MA = Staff(1, "马")
+        val WANG = Staff(2, "王")
+        val CAO = Staff(3, "曹")
+        val DAN = Staff(4, "单")
+        val GAO = Staff(5, "高")
+        val ZHANG = Staff(6, "张")
+        val SHI = Staff(7, "史")
+        val MAI = Staff(8, "麦",
                 forceEmpty = arrayListOf(
                         Arrangement(null, Shift.HUI_ZHEN, WorkDay.Wendsday),
                         Arrangement(null, Shift.CHANGE_WEI, WorkDay.Wendsday)
                 ))
-        val TANG = Staff("唐", incapableWorkDays = arrayListOf(WorkDay.Thursday))
-        val LING = Staff("玲")
-        val QI = Staff("齐")
-        val ZHU = Staff("朱")
-        val SUN = Staff("孙")
+        val TANG = Staff(9, "唐", incapableWorkDays = arrayListOf(WorkDay.Thursday))
+        val LING = Staff(10, "玲")
+        val QI = Staff(11, "齐")
+        val ZHU = Staff(12, "朱")
+        val SUN = Staff(13, "孙")
+        val WANG_2 = Staff(14, "汪")
 
         private val groupAOrder = arrayListOf(
                 ZHOU,
@@ -61,14 +63,14 @@ class Staff(val name: String,
                 MA,
                 DAN,
                 TANG,
-                WANG,
+                WANG_2,
                 ZHOU
         )
 
         private val backupOrder = arrayListOf(
                 ZHOU,
                 DAN,
-                WANG,
+                WANG_2,
                 QI,
                 GAO,
                 CAO,
