@@ -22,12 +22,12 @@ class ScheduleController : EpoxyController() {
         val allArrangements = WorkDay.ALL.map { arranger.calculate(it) }.reduceRight { list, acc ->
             list + acc
         }
-        Shift.ALL.forEach { shift ->
+        Shift.ALL.forEachIndexed { shiftIndex, shift ->
             shift.addTo(this)
-            WorkDay.ALL.forEach { workDay ->
+            WorkDay.ALL.forEachIndexed { workDayIndex, workDay ->
                 allArrangements.find { arrangement ->
                     arrangement.shift == shift && arrangement.workDay == workDay
-                }.addTo(this)
+                }.addTo((shiftIndex+workDayIndex) % 2 == 0, this)
             }
         }
         TestButtonItem_().id(id).text("Test").listener(View.OnClickListener {
@@ -44,6 +44,6 @@ fun WorkDay.addTo(controller: ScheduleController) {
     ScheduleItem_().id(controller.id).text(this.name).addTo(controller)
 }
 
-fun Arrangement?.addTo(controller: ScheduleController) {
-    ScheduleItem_().id(controller.id).text(this?.staff?.name ?: "None").addTo(controller)
+fun Arrangement?.addTo(color: Boolean, controller: ScheduleController) {
+    ScheduleItem_().id(controller.id).color(color).text(this?.staff?.name ?: "None").addTo(controller)
 }
