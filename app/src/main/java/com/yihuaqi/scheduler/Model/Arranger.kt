@@ -52,7 +52,7 @@ class Arranger {
     }
 
     fun step2(arrangements: MutableList<Arrangement>, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
-        Log.d(TAG, "stepB: assign HUI_ZHENG")
+        Log.d(TAG, "step2: assign HUI_ZHENG")
         val before = fillInArrangement(arrangements, Arrangement(Staff.getShuffledGroupAOrder(workDay).nextAvailableStaff(Shift.HUI_ZHEN, workDay), Shift.HUI_ZHEN, workDay))
         before?.let {
             if (it.shift == Shift.MR_2 && workDay == WorkDay.Tuesday) {
@@ -66,6 +66,9 @@ class Arranger {
 
     fun fillInArrangement(arrangements: MutableList<Arrangement>, arrangement: Arrangement): Arrangement? {
         Log.d(TAG, "fillInArrangement start")
+        if (arrangement.staff!!.forceEmpty(arrangement.shift, arrangement.workDay)) {
+            return null
+        }
         val prevArrangement = removeArrangementForStaff(arrangements, arrangement.staff!!)
         arrangements.add(arrangement)
         Log.d(TAG, "add $arrangement")

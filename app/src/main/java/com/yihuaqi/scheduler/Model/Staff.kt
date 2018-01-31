@@ -3,9 +3,18 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 12/27/17.
  */
-class Staff(val name: String, val incapableShifts: List<Shift> = arrayListOf(), val incapableWorkDays: List<WorkDay> = arrayListOf()) {
+class Staff(val name: String,
+            val incapableShifts: List<Shift> = arrayListOf(),
+            val incapableWorkDays: List<WorkDay> = arrayListOf(),
+            val forceEmpty: List<Arrangement> = arrayListOf()) {
     companion object {
-        val ZHOU = Staff("周", incapableShifts = arrayListOf(Shift.MR_1, Shift.MR_2))
+        val ZHOU = Staff("周",
+                incapableShifts = arrayListOf(Shift.MR_1, Shift.MR_2),
+                forceEmpty = arrayListOf(
+                        Arrangement(null, Shift.HUI_ZHEN, WorkDay.Monday),
+                        Arrangement(null, Shift.CHANGE_WEI, WorkDay.Monday)
+                )
+        )
         val MA = Staff("马")
         val WANG = Staff("王")
         val CAO = Staff("曹")
@@ -13,7 +22,11 @@ class Staff(val name: String, val incapableShifts: List<Shift> = arrayListOf(), 
         val GAO = Staff("高")
         val ZHANG = Staff("张")
         val SHI = Staff("史")
-        val MAI = Staff("麦")
+        val MAI = Staff("麦",
+                forceEmpty = arrayListOf(
+                        Arrangement(null, Shift.HUI_ZHEN, WorkDay.Wendsday),
+                        Arrangement(null, Shift.CHANGE_WEI, WorkDay.Wendsday)
+                ))
         val TANG = Staff("唐", incapableWorkDays = arrayListOf(WorkDay.Thursday))
         val LING = Staff("玲")
         val QI = Staff("齐")
@@ -86,7 +99,13 @@ class Staff(val name: String, val incapableShifts: List<Shift> = arrayListOf(), 
     }
 
     fun isAvailable(workDay: WorkDay, shift: Shift): Boolean {
-        return !incapableShifts.contains(shift) || !incapableWorkDays.contains(workDay)
+        return !incapableShifts.contains(shift)
+                && !incapableWorkDays.contains(workDay)
+
+    }
+
+    fun forceEmpty(shift: Shift, workDay: WorkDay): Boolean {
+        return forceEmpty.contains(Arrangement(null, shift, workDay))
     }
 
     override fun toString(): String {
