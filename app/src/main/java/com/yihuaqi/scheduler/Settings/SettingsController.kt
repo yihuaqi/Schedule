@@ -15,9 +15,9 @@ import com.yihuaqi.scheduler.Model.WorkDay
 class SettingsController(val context: Context): EpoxyController() {
 
     override fun buildModels() {
-        showDialog(0, "Group A Staff", Staff.getShuffledGroupAOrder(WorkDay.Monday), { CoreData.groupAIndex }, { i: Int -> CoreData.groupAIndex = i })
-        showDialog(1, "Group B Staff", Staff.getShuffledGroupBOrder(WorkDay.Monday), { CoreData.groupBIndex }, { i: Int -> CoreData.groupBIndex = i })
-        showDialog(2, "Group Backup Staff", Staff.getShuffledBackupOrder(WorkDay.Monday), { CoreData.backupIndex }, { i: Int -> CoreData.backupIndex = i })
+        showDialog(0, "周一会诊", Staff.getShuffledGroupAOrder(WorkDay.Monday), { CoreData.groupAIndex }, { i: Int -> CoreData.groupAIndex = i })
+        showDialog(1, "周一胃肠造影", Staff.getShuffledGroupBOrder(WorkDay.Monday), { CoreData.groupBIndex }, { i: Int -> CoreData.groupBIndex = i })
+        showDialog(2, "替班顺序", Staff.getShuffledBackupOrder(WorkDay.Monday), { CoreData.backupIndex }, { i: Int -> CoreData.backupIndex = i })
     }
 
     fun showDialog(id: Int, title: String, groups: List<Staff>, index: () -> Int, saveIndex: (Int) -> Unit) {

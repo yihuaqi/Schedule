@@ -23,9 +23,6 @@ class MainActivity : AppCompatActivity() {
                         .commitAllowingStateLoss()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
-                return@OnNavigationItemSelectedListener true
-            }
         }
         false
     }
