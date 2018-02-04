@@ -81,6 +81,24 @@ class Staff(val id: Int,
                 ZHU
         )
 
+        val ALL: List<Staff?> = arrayListOf(
+                ZHOU,
+                MA,
+                WANG,
+                CAO,
+                DAN,
+                GAO,
+                ZHANG,
+                SHI,
+                MAI,
+                TANG,
+                LING,
+                QI,
+                ZHU,
+                SUN,
+                WANG_2
+        )
+
         fun getShuffledGroupAOrder(workDay: WorkDay): List<Staff> {
             return shuffle(groupAOrder, CoreData.groupAIndex + workDay.offset)
         }

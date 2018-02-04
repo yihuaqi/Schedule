@@ -2,16 +2,14 @@ package com.yihuaqi.scheduler.Schedule
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airbnb.epoxy.EpoxyRecyclerView
-import com.airbnb.epoxy.EpoxyTouchHelper
-import com.yihuaqi.scheduler.Model.Arrangement
-import com.yihuaqi.scheduler.Model.Arranger
-import com.yihuaqi.scheduler.Model.Shift
-import com.yihuaqi.scheduler.Model.WorkDay
+import com.yihuaqi.scheduler.Model.*
 import com.yihuaqi.scheduler.R
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
@@ -57,26 +55,31 @@ class ScheduleFragment : Fragment() {
         getWorkdayMap().forEach { (workDay, epoxyRecyclerView) ->
             val arrangements = arrangementsMap[workDay]!!
             epoxyRecyclerView.buildModelsWith { controller ->
-                Shift.ALL.forEachIndexed { index, shift ->
-                    arrangements.find {arrangement ->
-                        arrangement.shift == shift && arrangement.workDay == workDay
-                    }!!.toItem(index, (index + workDay.offset) % 2 == 0).addTo(controller)
-                }
-                EpoxyTouchHelper.initDragging(controller)
-                        .withRecyclerView(epoxyRecyclerView)
-                        .forVerticalList()
-                        .withTarget(ScheduleItem::class.java)
-                        .andCallbacks(object : EpoxyTouchHelper.DragCallbacks<ScheduleItem>() {
-                            override fun onModelMoved(fromPosition: Int, toPosition: Int, modelBeingMoved: ScheduleItem?, itemView: View?) {
-                                val fromShift = Shift.ALL[fromPosition]
-                                val toShift = Shift.ALL[toPosition]
+                val options = Staff.ALL.filter {staff ->
+                    arrangements.find { arrangement ->
+                        arrangement.staff == staff
+                    } == null
+                }.toMutableList()
+                options.add(0, null)
 
-                                val fromArrangement = arrangements.find { it.shift == fromShift }!!
-                                val toArrangement = arrangements.find { it.shift == toShift }!!
-                                fromArrangement.shift = toShift
-                                toArrangement.shift = fromShift
-                            }
-                        })
+                Shift.ALL.forEachIndexed { index, shift ->
+                    val arrangement = arrangements.find {arrangement ->
+                        arrangement.shift == shift && arrangement.workDay == workDay
+                    }!!
+                    arrangement.toItem(index, (index + workDay.offset) % 2 == 0)
+                            .clickListener({ v ->
+                                Log.d("ScheduleFragment", "onClick: $arrangement")
+                                AlertDialog.Builder(context)
+                                        .setTitle("替换人员")
+                                        .setItems(options.map { it?.name ?: "空缺" }.toTypedArray(), { dialogInterface, i ->
+                                            val index = arrangements.indexOf(arrangement)
+                                            arrangements[index] = Arrangement(options[i], arrangement.shift, arrangement.workDay)
+                                            controller.requestModelBuild()
+                                        })
+                                        .show()
+                            })
+                        .addTo(controller)
+                }
             }
         }
     }
@@ -108,5 +111,5 @@ fun Shift.toItem(id: Int): ScheduleItem_ {
 }
 
 fun Arrangement.toItem(id: Int, color: Boolean): ScheduleItem_ {
-    return ScheduleItem_().id(this.staff?.id?: -(id + 1)).color(color).text(this?.staff?.name ?: "空")
+    return ScheduleItem_().id(this.staff?.id?: -(id + 1)).color(color).text(this?.staff?.name ?: "空缺")
 }

@@ -18,10 +18,12 @@ abstract class ScheduleItem: EpoxyModelWithHolder<ScheduleItem.Holder>() {
 
     @EpoxyAttribute lateinit var text: String
     @EpoxyAttribute var color: Boolean = false
+    @EpoxyAttribute var clickListener: View.OnClickListener? = null
 
     override fun bind(holder: Holder?) {
         holder?.textView?.text = text
         holder?.rootView?.backgroundColor = if (color) Color.LTGRAY else Color.WHITE
+        holder?.rootView?.setOnClickListener(clickListener)
     }
 
     class Holder: EpoxyHolder() {
