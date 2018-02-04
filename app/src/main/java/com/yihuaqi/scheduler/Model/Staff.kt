@@ -35,7 +35,7 @@ class Staff(val id: Int,
         val SUN = Staff(13, "孙")
         val WANG_2 = Staff(14, "汪")
 
-        private val groupAOrder = arrayListOf(
+        val groupAOrder = arrayListOf(
                 ZHOU,
                 MA,
                 WANG,
@@ -50,7 +50,7 @@ class Staff(val id: Int,
                 QI
         )
 
-        private val groupBOrder = arrayListOf(
+        val groupBOrder = arrayListOf(
                 QI,
                 CAO,
                 MAI,
@@ -67,7 +67,7 @@ class Staff(val id: Int,
                 ZHOU
         )
 
-        private val backupOrder = arrayListOf(
+        val backupOrder = arrayListOf(
                 ZHOU,
                 DAN,
                 WANG_2,

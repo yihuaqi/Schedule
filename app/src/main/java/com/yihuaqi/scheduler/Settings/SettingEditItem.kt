@@ -16,7 +16,7 @@ abstract class SettingEditItem: EpoxyModelWithHolder<SettingEditItem.Holder>() {
 
     @EpoxyAttribute lateinit var title: String
     @EpoxyAttribute lateinit var text: String
-    @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash) lateinit var listener: View.OnClickListener
+    @EpoxyAttribute lateinit var listener: View.OnClickListener
 
     override fun bind(holder: Holder?) {
         holder!!.title.text = title
