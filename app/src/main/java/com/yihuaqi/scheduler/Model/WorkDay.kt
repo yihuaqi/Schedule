@@ -3,7 +3,7 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 1/1/18.
  */
-class WorkDay(val name: String, val offset: Int) {
+data class WorkDay(val name: String, val offset: Int) {
     companion object {
         val Monday = WorkDay("周一", 0)
         val Tuesday = WorkDay("周二", 1)

@@ -71,9 +71,9 @@ class ScheduleFragment : Fragment() {
                                 Log.d("ScheduleFragment", "onClick: $arrangement")
                                 AlertDialog.Builder(context)
                                         .setTitle("替换人员")
-                                        .setItems(options.map { it?.name ?: "空缺" }.toTypedArray(), { dialogInterface, i ->
+                                        .setItems(options.map { it.name() }.toTypedArray(), { dialogInterface, i ->
                                             val index = arrangements.indexOf(arrangement)
-                                            arrangements[index] = Arrangement(options[i], arrangement.shift, arrangement.workDay)
+                                            arrangements[index] = arrangement.copy(staff = options[i])
                                             controller.requestModelBuild()
                                         })
                                         .show()
@@ -111,5 +111,5 @@ fun Shift.toItem(id: Int): ScheduleItem_ {
 }
 
 fun Arrangement.toItem(id: Int, color: Boolean): ScheduleItem_ {
-    return ScheduleItem_().id(this.staff?.id?: -(id + 1)).color(color).text(this?.staff?.name ?: "空缺")
+    return ScheduleItem_().id(this.staff?.id?: -(id + 1)).color(color).text(this?.staff.name())
 }

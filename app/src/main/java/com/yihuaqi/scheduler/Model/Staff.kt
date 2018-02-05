@@ -143,3 +143,7 @@ class Staff(val id: Int,
 fun List<Staff>.nextAvailableStaff(shift: Shift, workDay: WorkDay): Staff? {
     return this.find { it.isAvailable(workDay, shift) }
 }
+
+fun Staff?.name(): String {
+    return this?.name ?: "空缺"
+}
