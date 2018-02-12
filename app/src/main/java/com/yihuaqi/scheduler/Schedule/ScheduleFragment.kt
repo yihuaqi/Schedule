@@ -1,7 +1,10 @@
 package com.yihuaqi.scheduler.Schedule
 
+import android.content.Intent
+import android.content.Intent.*
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
@@ -9,9 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.yihuaqi.scheduler.BuildConfig
 import com.yihuaqi.scheduler.Model.*
 import com.yihuaqi.scheduler.R
 import kotlinx.android.synthetic.main.fragment_schedule.*
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by yihuaqi on 12/25/17.
@@ -30,7 +40,41 @@ class ScheduleFragment : Fragment() {
 
         initArrangements(arrangementsMap)
 
+        export.onClick {
+            val file = writeFile(arrangementsMap)
+            val shareIntent = Intent(ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(EXTRA_SUBJECT, "排班表")
+            shareIntent.putExtra(EXTRA_STREAM, FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file.await()))
+            startActivity(shareIntent)
+        }
+    }
 
+    val format = SimpleDateFormat("yyyy-MM-dd")
+
+    fun writeFile(arrangements: Map<WorkDay, List<Arrangement>>) = async {
+        val fileName = "${format.format(Calendar.getInstance().time)}.csv"
+        val file = File(getContext().cacheDir, fileName)
+        if (file.createNewFile()) {
+            val fw = FileWriter(file)
+            fw.write(",")
+            WorkDay.ALL.forEach {
+                fw.write(it.name)
+                fw.write(",")
+            }
+            fw.write("\n")
+            Shift.ALL.forEach {shift ->
+                fw.write(shift.name)
+                fw.write(",")
+                WorkDay.ALL.forEach {workDay ->
+                    fw.write(arrangements[workDay]!!.find { it.shift == shift }!!.staff.name())
+                    fw.write(",")
+                }
+                fw.write("\n")
+            }
+            fw.flush()
+        }
+        file
     }
 
     fun initWorkDays() {
