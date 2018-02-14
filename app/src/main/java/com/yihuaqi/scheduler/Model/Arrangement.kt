@@ -3,7 +3,7 @@ package com.yihuaqi.scheduler.Model
 /**
  * Created by yihuaqi on 12/28/17.
  */
-data class Arrangement(val staff: Staff?, var shift: Shift, var workDay: WorkDay) {
+data class Arrangement(val staff: Staff?, var shift: Shift, var workDay: WorkDay, val isBackup: Boolean = false) {
 
     override fun toString(): String {
         return "${staff.toString()} ${shift.toString()} ${workDay.toString()}"

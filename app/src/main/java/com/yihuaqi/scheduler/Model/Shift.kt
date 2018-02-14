@@ -19,7 +19,9 @@ class Shift(val name: String, val mustAvailable: Boolean = false) {
         val CT_9 = Shift("CT-9")
         val CT_10 = Shift("CT-10")
         val CT_11 = Shift("CT-11")
-        val HUI_ZHEN = Shift("会诊")
+        val CT_12 = Shift("CT-12")
+        val CT_13 = Shift("CT-13")
+        val HUI_ZHEN = Shift("会诊", true)
 
         fun nextAvailableCT(arrangements: List<Arrangement>, workDay: WorkDay): Shift? {
             return arrangements.firstOrNull { it.workDay == workDay && it.shift.isCT() }?.shift

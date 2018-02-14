@@ -7,7 +7,11 @@ import android.util.Log
  */
 class Arranger {
 
-    val TAG = "Arranger"
+    companion object {
+        val TAG = "Arranger"
+    }
+
+    val backupStaffManager: BackupStaffManager = BackupStaffManager()
 
     fun calculate(workDay: WorkDay): List<Arrangement> {
 
@@ -34,28 +38,21 @@ class Arranger {
 //
 //        swapArrangement(result, Arrangement(groupAStaff, Shift.HUI_ZHEN, workDay), nextAvailableStaff)
 
-        val backupStaffs = Staff.getShuffledBackupOrder(workDay).toMutableList()
+        backupStaffManager.setStartIndex(CoreData.backupIndex)
+
 
         if (workDay == WorkDay.Tuesday) {
             Log.d(TAG, "step1_5: assign SUN")
             val staff = result.find { it.shift == Shift.MR_2 }?.staff
             staff?.let {
                 val arrangement = removeArrangementForStaff(result, staff = staff)
-                arrangement?.staff?.let {
-                    backupStaffs.remove(staff)
-                    backupStaffs.add(staff)
-                }
+                backupStaffManager.setPriority(arrangement?.staff)
             }
             fillInArrangement(result, Arrangement(Staff.SUN, Shift.MR_2, workDay))
         }
 
         val backup = { arrangements: List<Arrangement>, shift: Shift, workDay: WorkDay ->
-            val staff = backupStaffs.find { backupStaff ->
-                backupStaff.isAvailable(workDay, shift)
-                        && arrangements.find { it.staff == backupStaff }?.shift?.isCT() ?: false
-            }
-            backupStaffs.remove(staff)
-            staff
+            backupStaffManager.pop(arrangements, shift, workDay)
         }
 
         step2(result, workDay, backup)
@@ -72,12 +69,29 @@ class Arranger {
         return result
     }
 
+    private fun step1(workDay: WorkDay): MutableList<Arrangement> {
+        Log.d(TAG, "step1: assign groupB")
+        return Shift.groupB().mapIndexed { index, shift ->
+            val a = Arrangement(Staff.getShuffledGroupBOrder(workDay)[index], shift, workDay)
+            Log.d(TAG, "step1: $a")
+            a
+        }.toMutableList()
+    }
+
     fun step2(arrangements: MutableList<Arrangement>, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
         Log.d(TAG, "step2: assign HUI_ZHENG")
         val before = fillInArrangement(arrangements, Arrangement(Staff.getShuffledGroupAOrder(workDay).nextAvailableStaff(Shift.HUI_ZHEN, workDay), Shift.HUI_ZHEN, workDay))
         before?.let {
             if (it.shift == Shift.MR_2 && workDay == WorkDay.Tuesday) {
                 arrangements.add(Arrangement(Staff.SUN, it.shift, workDay))
+            } else if (!it.shift.isCT()) {
+                val backupStaff = backup(arrangements, before.shift, workDay)!!
+                val prev =fillInArrangement(arrangements, Arrangement(backupStaff, before.shift, workDay))
+                prev?.staff?.let {
+                    removeArrangementForStaff(arrangements, it)
+                }
+            } else {
+
             }
         }
         arrangements.forEach {
@@ -85,6 +99,32 @@ class Arranger {
         }
         Log.d(TAG, "step2 finished")
     }
+
+
+
+    private fun step3(arrangements: MutableList<Arrangement>, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
+        Log.d(TAG, "Step 3 start: ")
+        when(workDay) {
+            WorkDay.Monday -> {
+                forceCT(arrangements, Staff.ZHOU, workDay, backup)
+            }
+            WorkDay.Wendsday -> {
+                forceCT(arrangements, Staff.MAI, workDay, backup)
+            }
+            WorkDay.Thursday -> {
+                val prev = removeArrangementForStaff(arrangements, Staff.TANG)
+                prev?.let {
+                    val backStaff = backup(arrangements, prev!!.shift, workDay)
+                    fillInArrangement(arrangements, Arrangement(backStaff, it.shift, workDay))
+                }
+            }
+        }
+        arrangements.forEach {
+            Log.d(TAG, it.toString())
+        }
+        Log.d(TAG, "Step 3 end: ")
+    }
+
 
     fun step4(arrangements: MutableList<Arrangement>, workDay: WorkDay) {
         Shift.ALL.forEach { shift ->
@@ -111,49 +151,6 @@ class Arranger {
         arrangements.remove(prevArrangement)
         Log.d(TAG, "remove $prevArrangement")
         return prevArrangement
-    }
-
-
-    private fun step1(workDay: WorkDay): MutableList<Arrangement> {
-        Log.d(TAG, "step1: assign groupB")
-        return Shift.groupB().mapIndexed { index, shift ->
-            val a = Arrangement(Staff.getShuffledGroupBOrder(workDay)[index], shift, workDay)
-            Log.d(TAG, "step1: $a")
-            a
-        }.toMutableList()
-    }
-
-    private fun removeArrangement(arrangements: MutableList<Arrangement>, staff: Staff, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
-        val prevArrangement = arrangements.find { it.staff == staff }
-        arrangements.remove(prevArrangement)
-        Log.d(TAG, "removeArrangement remove $prevArrangement because of $staff and $workDay")
-        prevArrangement?.shift?.let {
-            if (it.mustAvailable) {
-                val nextBackup = backup(arrangements, it, workDay)
-                val a = Arrangement(nextBackup, it, workDay)
-                arrangements.add(a)
-                Log.d(TAG, "removeArrangement add $a because mustAvailable")
-            }
-        }
-    }
-
-    private fun step3(arrangements: MutableList<Arrangement>, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
-        Log.d(TAG, "Step 3 start: ")
-        when(workDay) {
-            WorkDay.Monday -> {
-                forceCT(arrangements, Staff.ZHOU, workDay, backup)
-            }
-            WorkDay.Wendsday -> {
-                forceCT(arrangements, Staff.MAI, workDay, backup)
-            }
-            WorkDay.Thursday -> {
-                removeArrangement(arrangements, Staff.TANG, workDay, backup)
-            }
-        }
-        arrangements.forEach {
-            Log.d(TAG, it.toString())
-        }
-        Log.d(TAG, "Step 3 end: ")
     }
 
     fun forceCT(arrangements: MutableList<Arrangement>, who: Staff, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {

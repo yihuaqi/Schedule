@@ -118,7 +118,7 @@ class Staff(val id: Int,
         }
     }
 
-    fun isAvailable(workDay: WorkDay, shift: Shift): Boolean {
+    fun isAvailable(shift: Shift, workDay: WorkDay): Boolean {
         return !incapableShifts.contains(shift)
                 && !incapableWorkDays.contains(workDay)
 
@@ -141,7 +141,7 @@ class Staff(val id: Int,
 }
 
 fun List<Staff>.nextAvailableStaff(shift: Shift, workDay: WorkDay): Staff? {
-    return this.find { it.isAvailable(workDay, shift) }
+    return this.find { it.isAvailable(shift, workDay) }
 }
 
 fun Staff?.name(): String {
