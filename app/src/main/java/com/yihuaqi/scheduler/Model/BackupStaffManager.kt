@@ -25,6 +25,7 @@ class BackupStaffManager {
 
     var curIndex = 0
     var priorityStaff: Staff? = null
+    var backupResult: MutableList<Arrangement> = mutableListOf()
 
     fun setStartIndex(index: Int) {
         curIndex = index
@@ -35,6 +36,7 @@ class BackupStaffManager {
             val staff = nextStaff()
             Log.d(Arranger.TAG, "Backup staff: $staff ${canBackup(staff, arrangements, shift, workDay)}")
             if (canBackup(staff, arrangements, shift, workDay)) {
+                backupResult.add(Arrangement(staff, shift, workDay, true))
                 return staff
             }
         }
@@ -52,4 +54,5 @@ class BackupStaffManager {
     fun setPriority(staff: Staff? ) {
         priorityStaff = staff
     }
+
 }

@@ -36,7 +36,8 @@ class ScheduleFragment : Fragment() {
         initWorkDays()
         initShifts()
 
-        val arrangementsMap = getArrangementsMap()
+        val arranger = Arranger()
+        val arrangementsMap = getArrangementsMap(arranger)
 
         initArrangements(arrangementsMap)
 
@@ -47,6 +48,17 @@ class ScheduleFragment : Fragment() {
             shareIntent.putExtra(EXTRA_SUBJECT, "排班表")
             shareIntent.putExtra(EXTRA_STREAM, FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file.await()))
             startActivity(shareIntent)
+        }
+
+        initBackupResult(arranger.backupStaffManager)
+    }
+
+    fun initBackupResult(backupStaffManager: BackupStaffManager) {
+        recyclerViewBackup.buildModelsWith { controller ->
+            BackupItem_().id(-1).text("替班").addTo(controller)
+            backupStaffManager.backupResult.forEachIndexed { index, arrangement ->
+                BackupItem_().id(index).text("${arrangement.workDay.name} - ${arrangement.staff.name()}").addTo(controller)
+            }
         }
     }
 
@@ -128,8 +140,8 @@ class ScheduleFragment : Fragment() {
         }
     }
 
-    fun getArrangementsMap(): MutableMap<WorkDay, MutableList<Arrangement>> {
-        val arranger = Arranger()
+    fun getArrangementsMap(arranger: Arranger): MutableMap<WorkDay, MutableList<Arrangement>> {
+
         return WorkDay.ALL.map {
             it to arranger.calculate(it).toMutableList()
         }.toMap().toMutableMap()
