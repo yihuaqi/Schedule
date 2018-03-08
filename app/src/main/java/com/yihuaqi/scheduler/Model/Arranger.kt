@@ -27,16 +27,12 @@ class Arranger {
             Log.d(TAG, it.toString())
         }
 
-        Log.d(TAG, "Backup Order: ")
-        Staff.getShuffledBackupOrder(workDay).forEach {
-            Log.d(TAG, it.toString())
-        }
+//        Log.d(TAG, "Backup Order: ")
+//        Staff.getShuffledBackupOrder(workDay).forEach {
+//            Log.d(TAG, it.toString())
+//        }
 
         val result = step1(workDay)
-
-//        val groupAStaff = Staff.shuffledGroupAOrder.nextAvailableStaff(Shift.HUI_ZHEN, workDay)
-//
-//        swapArrangement(result, Arrangement(groupAStaff, Shift.HUI_ZHEN, workDay), nextAvailableStaff)
 
         backupStaffManager.setStartIndex(CoreData.backupIndex)
 
@@ -80,7 +76,10 @@ class Arranger {
 
     fun step2(arrangements: MutableList<Arrangement>, workDay: WorkDay, backup: (List<Arrangement>, Shift, WorkDay) -> Staff?) {
         Log.d(TAG, "step2: assign HUI_ZHENG")
-        val before = fillInArrangement(arrangements, Arrangement(Staff.getShuffledGroupAOrder(workDay).nextAvailableStaff(Shift.HUI_ZHEN, workDay), Shift.HUI_ZHEN, workDay))
+        val huizhenStaff = Staff.getShuffledGroupAOrder(workDay).nextAvailableStaff(Shift.HUI_ZHEN, workDay);
+        Log.d(TAG, "HUI_ZHENG staff: ${huizhenStaff}")
+        val before = fillInArrangement(arrangements, Arrangement(huizhenStaff, Shift.HUI_ZHEN, workDay))
+        Log.d(TAG, "HUI_ZHENG staff arrangement before: ${before}")
         before?.let {
             if (it.shift == Shift.MR_2 && workDay == WorkDay.Tuesday) {
                 arrangements.add(Arrangement(Staff.SUN, it.shift, workDay))

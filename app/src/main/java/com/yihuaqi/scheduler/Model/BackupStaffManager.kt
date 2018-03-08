@@ -32,20 +32,16 @@ class BackupStaffManager {
 
     fun pop(arrangements: List<Arrangement>, shift: Shift, workDay: WorkDay): Staff {
         while(true) {
-            curIndex %= defaultOrder.size
-
             val staff = nextStaff()
             Log.d(Arranger.TAG, "Backup staff: $staff ${canBackup(staff, arrangements, shift, workDay)}")
             if (canBackup(staff, arrangements, shift, workDay)) {
                 return staff
             }
-
-            curIndex++
         }
     }
 
     fun nextStaff(): Staff {
-        return priorityStaff ?: defaultOrder[curIndex++]
+        return priorityStaff ?: defaultOrder[curIndex++ % defaultOrder.size]
     }
 
     fun canBackup(staff: Staff, arrangements: List<Arrangement>, shift: Shift, workDay: WorkDay): Boolean {

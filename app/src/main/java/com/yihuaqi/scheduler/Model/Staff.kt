@@ -67,20 +67,6 @@ class Staff(val id: Int,
                 ZHOU
         )
 
-        val backupOrder = arrayListOf(
-                ZHOU,
-                DAN,
-                WANG_2,
-                QI,
-                GAO,
-                CAO,
-                TANG,
-                MAI,
-                LING,
-                WANG,
-                ZHU
-        )
-
         val ALL: List<Staff?> = arrayListOf(
                 ZHOU,
                 MA,
@@ -105,10 +91,6 @@ class Staff(val id: Int,
 
         fun getShuffledGroupBOrder(workDay: WorkDay): List<Staff> {
             return shuffle(groupBOrder, CoreData.groupBIndex + workDay.offset)
-        }
-
-        fun getShuffledBackupOrder(workDay: WorkDay): List<Staff> {
-            return shuffle(backupOrder, CoreData.backupIndex + workDay.offset)
         }
 
         fun shuffle(staffs: List<Staff>, initial: Int): List<Staff> {
