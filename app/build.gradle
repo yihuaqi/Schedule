@@ -47,4 +47,5 @@ dependencies {
 
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.20'
     api "org.jetbrains.anko:anko:$anko_version"
+    implementation 'com.google.code.gson:gson:2.7'
 }

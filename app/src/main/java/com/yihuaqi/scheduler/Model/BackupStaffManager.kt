@@ -43,7 +43,11 @@ class BackupStaffManager {
     }
 
     fun nextStaff(): Staff {
-        return priorityStaff ?: defaultOrder[curIndex++ % defaultOrder.size]
+        return priorityStaff?.let {
+            val result = it
+            priorityStaff = null
+            result
+        } ?: defaultOrder[curIndex++ % defaultOrder.size]
     }
 
     fun canBackup(staff: Staff, arrangements: List<Arrangement>, shift: Shift, workDay: WorkDay): Boolean {
